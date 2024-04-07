@@ -42,8 +42,13 @@ export function NavToolbar({
   const styles = useStyles2(getStyles);
   const breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
 
+  // XL4: Disable controls other than timepicker in the NavToolBar
+  const timePickerOnly = true
+
+  //return null;
   return (
     <div data-testid={Components.NavToolbar.container} className={styles.pageToolbar}>
+      {!timePickerOnly && (
       <div className={styles.menuButton}>
         <IconButton
           id={TOGGLE_BUTTON_ID}
@@ -59,10 +64,13 @@ export function NavToolbar({
           data-testid={Components.NavBar.Toggle.button}
         />
       </div>
+      )}
+      {!timePickerOnly && (
       <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbsWrapper} />
+      )}
       <div className={styles.actions}>
         {actions}
-        {searchBarHidden && (
+        {!timePickerOnly && searchBarHidden && (
           <ToolbarButton
             onClick={onToggleKioskMode}
             narrow
@@ -70,14 +78,15 @@ export function NavToolbar({
             icon="monitor"
           />
         )}
-        {actions && <NavToolbarSeparator />}
+        {!timePickerOnly && actions && <NavToolbarSeparator />}
+        {!timePickerOnly && (
         <ToolbarButton
           onClick={onToggleSearchBar}
           narrow
           title={t('navigation.toolbar.toggle-search-bar', 'Toggle top search bar')}
         >
           <Icon name={searchBarHidden ? 'angle-down' : 'angle-up'} size="xl" />
-        </ToolbarButton>
+        </ToolbarButton>)}
       </div>
     </div>
   );
@@ -98,6 +107,7 @@ const getStyles = (theme: GrafanaTheme2) => {
       padding: theme.spacing(0, 1, 0, 2),
       alignItems: 'center',
       borderBottom: `1px solid ${theme.colors.border.weak}`,
+      backgroundColor: theme.colors.background.secondary, // Using a theme color
     }),
     menuButton: css({
       display: 'flex',

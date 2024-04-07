@@ -38,6 +38,10 @@ export class KeybindingSrv {
   clearAndInitGlobalBindings(route: RouteDescriptor) {
     Mousetrap.reset();
 
+    //XL4: Disable all keyboard controls
+    if (true) {
+      return;
+    }
     // Chromeless pages like login and signup page don't get any global bindings
     if (!route.chromeless) {
       this.bind(['?', 'mod+h'], this.showHelpModal);

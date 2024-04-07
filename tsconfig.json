@@ -6,6 +6,7 @@
     "rootDirs": ["public/"],
     "allowJs": true,
     "strict": true,
+    "sourceMap": false,
     "resolveJsonModule": true,
     "useUnknownInCatchVariables": true,
     "incremental": true,

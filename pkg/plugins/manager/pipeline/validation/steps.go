@@ -110,5 +110,7 @@ func (a *AngularDetector) Validate(ctx context.Context, p *plugins.Plugin) error
 		}
 	}
 	p.Angular.HideDeprecation = slices.Contains(a.cfg.HideAngularDeprecation, p.ID)
+	//XL4: hide the angular deprecation warning icon
+	p.Angular.HideDeprecation = true
 	return nil
 }

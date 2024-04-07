@@ -312,6 +312,14 @@ export const isDataFrameWithValue = (data: unknown): data is DataFrameWithValue 
  * Inspect any object and return the results as a DataFrame
  */
 export function toDataFrame(data: any): DataFrame {
+
+  //XL4: Eliminate the Template warning popup message
+  if (typeof data === "string" && data.length == 0) {
+    console.info("toDataFrame data is an empty string")
+    const df: DataFrame = {length: 0, fields: []}
+    return df
+  }
+
   if ('fields' in data) {
     // DataFrameDTO does not have length
     if ('length' in data && data.fields[0]?.values?.get) {

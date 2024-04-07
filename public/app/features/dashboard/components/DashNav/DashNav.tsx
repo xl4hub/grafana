@@ -189,6 +189,11 @@ export const DashNav = React.memo<Props>((props) => {
       return [];
     }
 
+    //XL4:  Disable the mark as favorite button
+    if (true) {
+      return [];
+    }
+
     if (canStar) {
       let desc = isStarred
         ? t('dashboard.toolbar.unmark-favorite', 'Unmark as favorite')
@@ -344,7 +349,8 @@ export const DashNav = React.memo<Props>((props) => {
       );
     }
 
-    if (canShare) {
+    //XL4:  Disable the share button
+    if (false && canShare) {
       buttons.push(<ShareButton key="button-share" dashboard={dashboard} />);
     }
 
