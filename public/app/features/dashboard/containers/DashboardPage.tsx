@@ -11,7 +11,7 @@ import { Page } from 'app/core/components/Page/Page';
 import { EntityNotFound } from 'app/core/components/PageNotFound/EntityNotFound';
 import { GrafanaContext, GrafanaContextType } from 'app/core/context/GrafanaContext';
 import { createErrorNotification } from 'app/core/copy/appNotification';
-import { getKioskMode } from 'app/core/navigation/kiosk';
+import { getKioskMode, getKioskXl4Mode } from 'app/core/navigation/kiosk';
 import { GrafanaRouteComponentProps } from 'app/core/navigation/types';
 import { getNavModel } from 'app/core/selectors/navModel';
 import { PanelModel } from 'app/features/dashboard/state';
@@ -296,6 +296,7 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
     const { dashboard, initError, queryParams } = this.props;
     const { editPanel, viewPanel, updateScrollTop, pageNav, sectionNav } = this.state;
     const kioskMode = getKioskMode(this.props.queryParams);
+    const xl4Mode = getKioskXl4Mode(this.props.queryParams);
 
     if (!dashboard || !pageNav || !sectionNav) {
       return <DashboardLoading initPhase={this.props.initPhase} />;
@@ -337,6 +338,7 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
                 folderTitle={dashboard.meta.folderTitle}
                 isFullscreen={!!viewPanel}
                 kioskMode={kioskMode}
+                xl4Mode={xl4Mode}
                 hideTimePicker={dashboard.timepicker.hidden}
               />
             </header>

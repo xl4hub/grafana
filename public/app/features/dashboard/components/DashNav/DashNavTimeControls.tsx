@@ -17,6 +17,7 @@ export interface Props {
   dashboard: DashboardModel;
   onChangeTimeZone: (timeZone: TimeZone) => void;
   isOnCanvas?: boolean;
+  xl4HideTimeControl?: boolean; 
   onToolbarRefreshClick?: () => void;
   onToolbarZoomClick?: () => void;
   onToolbarTimePickerClick?: () => void;
@@ -106,6 +107,8 @@ export class DashNavTimeControls extends Component<Props> {
       text = getTimeSrv().getAutoRefreshInteval().interval;
     }
 
+    const { xl4HideTimeControl } = this.props;
+
     return (
       <>
         <TimePickerWithHistory
@@ -119,6 +122,7 @@ export class DashNavTimeControls extends Component<Props> {
           onChangeTimeZone={this.onChangeTimeZone}
           onChangeFiscalYearStartMonth={this.onChangeFiscalYearStartMonth}
           isOnCanvas={isOnCanvas}
+          xl4HideTimeControl={xl4HideTimeControl}
           onToolbarTimePickerClick={this.props.onToolbarTimePickerClick}
         />
         <RefreshPicker
@@ -129,6 +133,7 @@ export class DashNavTimeControls extends Component<Props> {
           isOnCanvas={isOnCanvas}
           tooltip={t('dashboard.toolbar.refresh', 'Refresh dashboard')}
           noIntervalPicker={hideIntervalPicker}
+          xl4HideTimeControl={xl4HideTimeControl}
           showAutoInterval={true}
           text={text}
         />

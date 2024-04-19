@@ -116,6 +116,13 @@ export enum KioskMode {
   Full = 'full',
 }
 
+export enum XL4Mode {
+  Off,
+  View,
+  VwTp,
+  Edit,
+}
+
 export type GetMutableDashboardModelFn = () => DashboardModel | null;
 
 export interface QueriesToUpdateOnDashboardLoad {

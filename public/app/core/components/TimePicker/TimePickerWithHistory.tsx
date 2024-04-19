@@ -22,6 +22,18 @@ interface TimePickerHistoryItem {
 type LSTimePickerHistoryItem = TimePickerHistoryItem | TimeRange;
 
 export const TimePickerWithHistory = (props: Props) => {
+
+  const { xl4HideTimeControl } = props;
+  const hiddenStyle = {
+    opacity: 0,
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    overflow: 'hidden',
+    clip: 'rect(1px, 1px, 1px, 1px)',
+    pointerEvents: 'none'
+  };
+
   return (
     <LocalStorageValueProvider<LSTimePickerHistoryItem[]> storageKey={LOCAL_STORAGE_KEY} defaultValue={[]}>
       {(rawValues, onSaveToStore) => {
@@ -30,6 +42,7 @@ export const TimePickerWithHistory = (props: Props) => {
 
         return (
           <TimeRangePicker
+            style={xl4HideTimeControl?hiddenStyle:{}}
             {...props}
             history={history}
             onChange={(value) => {

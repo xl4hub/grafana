@@ -31,7 +31,7 @@ import { DashboardModel } from 'app/features/dashboard/state';
 import { DashboardInteractions } from 'app/features/dashboard-scene/utils/interactions';
 import { playlistSrv } from 'app/features/playlist/PlaylistSrv';
 import { updateTimeZoneForSession } from 'app/features/profile/state/reducers';
-import { KioskMode } from 'app/types';
+import { KioskMode, XL4Mode } from 'app/types';
 import { DashboardMetaChangedEvent, ShowModalReactEvent } from 'app/types/events';
 
 import {
@@ -76,6 +76,7 @@ export interface OwnProps {
   dashboard: DashboardModel;
   isFullscreen: boolean;
   kioskMode?: KioskMode | null;
+  xl4Mode?: XL4Mode | null;
   hideTimePicker: boolean;
   folderTitle?: string;
   title: string;
@@ -190,7 +191,8 @@ export const DashNav = React.memo<Props>((props) => {
     }
 
     //XL4:  Disable the mark as favorite button
-    if (true) {
+    const { xl4Mode } = props;
+    if (xl4Mode != XL4Mode.Off) {
       return [];
     }
 
@@ -268,9 +270,15 @@ export const DashNav = React.memo<Props>((props) => {
     if (hideTimePicker) {
       return null;
     }
+
+    // XL4:  Time control is hidden but still enabled so refresh button can be clicked by eSync UI
+    const { xl4Mode } = props;
+    const xl4HideTimeControl =  xl4Mode == XL4Mode.View;
+
     return (
       <DashNavTimeControls
         dashboard={dashboard}
+        xl4HideTimeControl = {xl4HideTimeControl}
         onChangeTimeZone={updateTimeZoneForSession}
         onToolbarRefreshClick={DashboardInteractions.toolbarRefreshClick}
         onToolbarZoomClick={DashboardInteractions.toolbarZoomClick}
@@ -291,7 +299,10 @@ export const DashNav = React.memo<Props>((props) => {
       return [renderPlaylistControls(), renderTimeControls()];
     }
 
-    if (kioskMode === KioskMode.TV) {
+    const { xl4Mode } = props;
+    const enableTimeControlsOnly = 
+            xl4Mode == XL4Mode.View || xl4Mode == XL4Mode.VwTp || kioskMode === KioskMode.TV;
+    if (enableTimeControlsOnly ) {
       return [renderTimeControls()];
     }
 
@@ -350,7 +361,7 @@ export const DashNav = React.memo<Props>((props) => {
     }
 
     //XL4:  Disable the share button
-    if (false && canShare) {
+    if (xl4Mode == XL4Mode.Off && canShare) {
       buttons.push(<ShareButton key="button-share" dashboard={dashboard} />);
     }
 

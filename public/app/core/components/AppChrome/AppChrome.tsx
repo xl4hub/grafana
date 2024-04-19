@@ -10,7 +10,7 @@ import { useGrafana } from 'app/core/context/GrafanaContext';
 import { useMediaQueryChange } from 'app/core/hooks/useMediaQueryChange';
 import store from 'app/core/store';
 import { CommandPalette } from 'app/features/commandPalette/CommandPalette';
-import { KioskMode } from 'app/types';
+import { KioskMode, XL4Mode } from 'app/types';
 
 import { AppChromeMenu } from './AppChromeMenu';
 import { DOCKED_LOCAL_STORAGE_KEY, DOCKED_MENU_OPEN_LOCAL_STORAGE_KEY } from './AppChromeService';
@@ -25,7 +25,7 @@ export interface Props extends PropsWithChildren<{}> {}
 export function AppChrome({ children }: Props) {
   const { chrome } = useGrafana();
   const state = chrome.useState();
-  const searchBarHidden = state.searchBarHidden || state.kioskMode === KioskMode.TV;
+  const searchBarHidden = state.serchBarHidden || state.kioskMode === KioskMode.TV || state.xl4Mode != XL4Mode.Off;
   const theme = useTheme2();
   const styles = useStyles2(getStyles);
 
@@ -46,7 +46,7 @@ export function AppChrome({ children }: Props) {
   const contentClass = cx({
     [styles.content]: true,
     [styles.contentNoSearchBar]: searchBarHidden,
-    [styles.contentChromeless]: state.chromeless,
+    [styles.contentChromeless]: state.chromeless || state.xl4Mode == XL4Mode.View,
   });
 
   const handleMegaMenu = () => {
@@ -57,6 +57,8 @@ export function AppChrome({ children }: Props) {
   const url = pathname + search;
   const shouldShowReturnToPrevious =
     config.featureToggles.returnToPrevious && state.returnToPrevious && url !== state.returnToPrevious.href;
+
+  const hideLeftMenu = state.xl4Mode != XL4Mode.Off;
 
   // Clear returnToPrevious when the page is manually navigated to
   useEffect(() => {
@@ -86,6 +88,7 @@ export function AppChrome({ children }: Props) {
             {!searchBarHidden && <TopSearchBar />}
             <NavToolbar
               searchBarHidden={searchBarHidden}
+              hideLeftMenu={hideLeftMenu}
               sectionNav={state.sectionNav.node}
               pageNav={state.pageNav}
               actions={state.actions}
@@ -98,7 +101,7 @@ export function AppChrome({ children }: Props) {
       )}
       <main className={contentClass}>
         <div className={styles.panes}>
-          {!state.chromeless && state.megaMenuDocked && state.megaMenuOpen && (
+          {!state.chromeless && state.megaMenuDocked && state.megaMenuOpen && !hideLeftMenu && (
             <MegaMenu className={styles.dockedMegaMenu} onClose={() => chrome.setMegaMenuOpen(false)} />
           )}
           <div className={styles.pageContainer} id="pageContent">

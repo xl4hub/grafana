@@ -9,6 +9,7 @@ import { getExploreUrl } from 'app/core/utils/explore';
 import { SaveDashboardDrawer } from 'app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer';
 import { ShareModal } from 'app/features/dashboard/components/ShareModal';
 import { DashboardModel } from 'app/features/dashboard/state';
+import { XL4Mode } from 'app/types';
 
 import { getTimeSrv } from '../../features/dashboard/services/TimeSrv';
 import {
@@ -39,7 +40,8 @@ export class KeybindingSrv {
     Mousetrap.reset();
 
     //XL4: Disable all keyboard controls
-    if (true) {
+    const { xl4Mode } = this.chromeService.state.getValue();
+    if (xl4Mode != XL4Mode.Off) {
       return;
     }
     // Chromeless pages like login and signup page don't get any global bindings

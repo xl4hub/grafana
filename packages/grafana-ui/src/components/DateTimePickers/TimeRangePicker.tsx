@@ -44,6 +44,7 @@ export interface TimeRangePickerProps {
   hideQuickRanges?: boolean;
   widthOverride?: number;
   isOnCanvas?: boolean;
+  xl4HideTimeControl?: boolean;
   onToolbarTimePickerClick?: () => void;
 }
 
@@ -118,8 +119,10 @@ export function TimeRangePicker(props: TimeRangePickerProps) {
 
   const currentTimeRange = formattedRange(value, timeZone);
 
+  const { xl4HideTimeControl } = props;
+
   return (
-    <ButtonGroup className={styles.container}>
+    <ButtonGroup className={xl4HideTimeControl?styles.hidden:styles.container}>
       {hasAbsolute && (
         <ToolbarButton
           aria-label={t('time-picker.range-picker.backwards-time-aria-label', 'Move time range backwards')}
@@ -278,6 +281,15 @@ const getStyles = (theme: GrafanaTheme2) => {
         transform: 'translate(50%, -50%)',
         zIndex: theme.zIndex.modal,
       },
+    }),
+    hidden: css({
+      opacity: 0,
+      position: 'absolute',
+      width: '1px',
+      height: '1px',
+      overflow: 'hidden',
+      clip: 'rect(1px, 1px, 1px, 1px)',
+      pointerEvents: 'none'
     }),
   };
 };

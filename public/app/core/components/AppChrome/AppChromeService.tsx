@@ -7,7 +7,7 @@ import appEvents from 'app/core/app_events';
 import { t } from 'app/core/internationalization';
 import store from 'app/core/store';
 import { isShallowEqual } from 'app/core/utils/isShallowEqual';
-import { KioskMode } from 'app/types';
+import { KioskMode, XL4Mode } from 'app/types';
 
 import { RouteDescriptor } from '../../navigation/types';
 
@@ -22,6 +22,7 @@ export interface AppChromeState {
   megaMenuOpen: boolean;
   megaMenuDocked: boolean;
   kioskMode: KioskMode | null;
+  xl4Mode: XL4Mode | null;
   layout: PageLayoutType;
   returnToPrevious?: {
     title: ReturnToPreviousProps['title'];
@@ -52,6 +53,7 @@ export class AppChromeService {
     megaMenuOpen: this.megaMenuDocked && store.getBool(DOCKED_MENU_OPEN_LOCAL_STORAGE_KEY, true),
     megaMenuDocked: this.megaMenuDocked,
     kioskMode: null,
+    xl4Mode: null,
     layout: PageLayoutType.Canvas,
     returnToPrevious: this.returnToPreviousData,
   });
@@ -182,15 +184,40 @@ export class AppChromeService {
     locationService.partial({ kiosk: null });
   }
 
+  //XL4: Similar logic to that in kiosk.ts
   public setKioskModeFromUrl(kiosk: UrlQueryValue) {
+    var kioskMode: KioskMode | null;
+    var xl4Mode:   XL4Mode;
     switch (kiosk) {
       case 'tv':
-        this.update({ kioskMode: KioskMode.TV });
+        kioskMode = KioskMode.TV;
+        xl4Mode = XL4Mode.Off;
         break;
       case '1':
       case true:
-        this.update({ kioskMode: KioskMode.Full });
+        kioskMode = KioskMode.Full;
+        xl4Mode = XL4Mode.Off;
+        break;
+      default:
+      case null:
+      case 'off':
+        kioskMode = null;
+        xl4Mode = XL4Mode.Off;
+        break;
+      case 'view':
+        kioskMode = KioskMode.TV;
+        xl4Mode = XL4Mode.View;
+        break;
+      case 'vwtp':
+        kioskMode = KioskMode.TV;
+        xl4Mode = XL4Mode.VwTp;
+        break;
+      case 'edit':
+        kioskMode = null;
+        xl4Mode = XL4Mode.Edit;
+        break;
     }
+    this.update({ kioskMode: kioskMode, xl4Mode: xl4Mode });
   }
 
   public getKioskUrlValue(mode: KioskMode | null) {

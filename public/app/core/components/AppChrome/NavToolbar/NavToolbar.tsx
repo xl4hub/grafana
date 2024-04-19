@@ -14,6 +14,7 @@ import { buildBreadcrumbs } from '../../Breadcrumbs/utils';
 import { TOP_BAR_LEVEL_HEIGHT } from '../types';
 
 import { NavToolbarSeparator } from './NavToolbarSeparator';
+import { XL4Mode } from 'app/types';
 
 export const TOGGLE_BUTTON_ID = 'mega-menu-toggle';
 
@@ -22,6 +23,7 @@ export interface Props {
   onToggleMegaMenu(): void;
   onToggleKioskMode(): void;
   searchBarHidden?: boolean;
+  hideLeftMenu?: boolean;
   sectionNav: NavModelItem;
   pageNav?: NavModelItem;
   actions: React.ReactNode;
@@ -30,6 +32,7 @@ export interface Props {
 export function NavToolbar({
   actions,
   searchBarHidden,
+  hideLeftMenu,
   sectionNav,
   pageNav,
   onToggleMegaMenu,
@@ -43,12 +46,12 @@ export function NavToolbar({
   const breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
 
   // XL4: Disable controls other than timepicker in the NavToolBar
-  const timePickerOnly = true
+  const showMenus = !hideLeftMenu;
+  const hideNavToolBar = state.xl4Mode == XL4Mode.View;
 
-  //return null;
   return (
-    <div data-testid={Components.NavToolbar.container} className={styles.pageToolbar}>
-      {!timePickerOnly && (
+    <div data-testid={Components.NavToolbar.container} className={hideNavToolBar?styles.hidden:styles.pageToolbar}>
+      {showMenus && (
       <div className={styles.menuButton}>
         <IconButton
           id={TOGGLE_BUTTON_ID}
@@ -65,12 +68,12 @@ export function NavToolbar({
         />
       </div>
       )}
-      {!timePickerOnly && (
+      {showMenus && (
       <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbsWrapper} />
       )}
-      <div className={styles.actions}>
+      <div className={hideNavToolBar?styles.hidden:styles.actions}>
         {actions}
-        {!timePickerOnly && searchBarHidden && (
+        {showMenus && searchBarHidden && (
           <ToolbarButton
             onClick={onToggleKioskMode}
             narrow
@@ -78,8 +81,8 @@ export function NavToolbar({
             icon="monitor"
           />
         )}
-        {!timePickerOnly && actions && <NavToolbarSeparator />}
-        {!timePickerOnly && (
+        {showMenus && actions && <NavToolbarSeparator />}
+        {showMenus && (
         <ToolbarButton
           onClick={onToggleSearchBar}
           narrow
@@ -128,6 +131,15 @@ const getStyles = (theme: GrafanaTheme2) => {
       '.body-drawer-open &': {
         display: 'none',
       },
+    }),
+    hidden: css({
+      opacity: 0,
+      position: 'absolute',
+      height: '1px',
+      width: '1px',
+      overflow: 'hidden',
+      clip: 'rect(1px, 1px, 1px, 1px)',
+      pointerEvents: 'none'
     }),
   };
 };

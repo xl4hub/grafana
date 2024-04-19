@@ -26,6 +26,7 @@ export interface Props {
   width?: string;
   primary?: boolean;
   isOnCanvas?: boolean;
+  xl4HideTimeControl?: boolean;
 }
 
 export class RefreshPicker extends PureComponent<Props> {
@@ -105,8 +106,19 @@ export class RefreshPicker extends PureComponent<Props> {
     const tooltipAutoRefreshOff = t('refresh-picker.tooltip.turned-off', 'Auto refresh off');
     const tooltipAutoRefresh = selectedValue.value === '' ? tooltipAutoRefreshOff : tooltipIntervalSelected;
 
+    const hiddenStyle = {
+      opacity: 0,
+      position: 'absolute',
+      width: '1px',
+      height: '1px',
+      overflow: 'hidden',
+      clip: 'rect(1px, 1px, 1px, 1px)',
+      pointerEvents: 'none'
+    }; 
+    const { xl4HideTimeControl } = this.props;
+
     return (
-      <ButtonGroup className="refresh-picker">
+      <ButtonGroup className="refresh-picker" style={xl4HideTimeControl?hiddenStyle:{}}>
         <ToolbarButton
           aria-label={text}
           tooltip={tooltip}
@@ -115,6 +127,7 @@ export class RefreshPicker extends PureComponent<Props> {
           icon={isLoading ? 'spinner' : 'sync'}
           style={width ? { width } : undefined}
           data-testid={selectors.components.RefreshPicker.runButtonV2}
+          xl4-click={'RefreshButton'}
         >
           {text}
         </ToolbarButton>
